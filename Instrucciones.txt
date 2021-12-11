@@ -1,0 +1,12 @@
+Instrucciones Front-Angular
+
+1- Ejecutar comando 'npm install' en la carpeta del proyecto
+2- En el archivo general en la ubicación /models/General.model.ts se puede cambiar la ip de conexión al back
+3- Ejecutar con el comando 'ng serve'
+
+
+Instrucciones Back - Node Js
+
+1-Abrir la carpeta server
+2. Ejecutal npm install
+3. Para correr en modo desarrollador se deben instanciar dos consolas y tipear npm run build y en la otra consola npm run dev
