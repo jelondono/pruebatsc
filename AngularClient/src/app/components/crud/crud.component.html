@@ -1,0 +1,253 @@
+<div class="contenedor-tabla">
+  <div class="col-12">
+    <div class="row">
+      <div class="col-9">
+        <h4>Listado de empleados</h4>
+      </div>
+      <div class="col-3">
+        <button class="btn btn-outline-success btn-sm" data-title="Save" data-toggle="modal" data-target="#add"
+          (click)="openModalAgregarEmpleado(agregarEmpleado)"><span class="fa fa-plus"></span> Agregar nuevo
+          empleado</button></div>
+    </div>
+    <br><br>
+    <div class="row">
+      <div class="form-group has-search col-sm-7 col-md-4">
+        <span class="fa fa-search form-control-feedback"></span>
+        <input type="text" [(ngModel)]="filtroEmpleados" name="filtroTramiesPendientes"
+          (keyup)="filtrarEmpleados($event)" class="form-control" placeholder="Buscar" />
+      </div>
+
+    </div>
+
+
+    <div class="table-responsive">
+
+
+      <table id="mytable" class="table table-bordered table-striped table-responsive">
+
+        <thead>
+          <th>PRIMER NOMBRE</th>
+          <th>PRIMER APELLIDO</th>
+          <th>TIPO DE IDENTIFICACIÓN</th>
+          <th>NÚMERO DE IDENTIFICACIÓN</th>
+          <th>USUARIO</th>
+          <th>PAIS</th>
+          <th>CORREO</th>
+          <th>EDITAR</th>
+          <th>ELIMINAR</th>
+        </thead>
+        <tbody>
+
+          <tr
+            *ngFor="let item of (listadoEmpleados | paginate: { itemsPerPage: 10, currentPage: p }); let posicion = index">
+            <td>{{item.nombre}}</td>
+            <td>{{item.apellido}}</td>
+            <td>{{item.tipoidentificacion}}</td>
+            <td>{{item.numeroidentificacion}}</td>
+            <td>{{item.usuario}}</td>
+            <td>{{item.pais}}</td>
+            <td>{{item.correo}}</td>
+
+            <td>
+              <button class="btn btn-outline-success btn-xs" (click)="openModalEditarEmpleado(editarEmpleado,item)"
+                data-title="Edit" data-toggle="modal" data-target="#edit"><span class="fa fa-pencil"></span>Editar</button>
+            </td>
+            <td>
+              <button class="btn btn-outline-danger btn-xs" data-title="Delete"
+                (click)="deleteUser(item.numeroidentificacion)" data-toggle="modal" data-target="#delete"><span
+                  class="fa fa-trash"></span>Eliminar</button>
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+      <pagination-controls (pageChange)="p = $event" previousLabel="Anterior" nextLabel="Siguiente"
+        screenReaderPaginationLabel="Paginación" screenReaderPageLabel="Pagina"
+        screenReaderCurrentLabel="Estas en la pagina" responsive></pagination-controls>
+
+
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal para guardar un nuevo empleado -->
+
+<ng-template #agregarEmpleado let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Agregar Empleado</h4>
+    <button type="button" class="close" aria-label="Close" (click)="cerrarModalGuardar()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="validationServer01">TIPO IDENTIFICACIÓN</label>
+          <select class="form-control" name="tipoIdentificacion" [(ngModel)]="modelEmpleado.tipoidentificacion"
+            placeholder="Elija un tipo de identificacion">
+            <option value="CC">Cédula de ciudadanía</option>
+            <option value="CE">Cédula de extranjería</option>
+            <option value="PE">Permiso especial</option>
+            <option value="PA">Pasaporte</option>
+          </select>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="numIdentifiacion"># Identificacion</label>
+          <input type="text" [(ngModel)]="modelEmpleado.numeroidentificacion" class="form-control" name="inputPassword4" placeholder="Digite el numero de identificación">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="nombre">Nombre</label>
+          <input type="text" [(ngModel)]="modelEmpleado.nombre" class="form-control" name="nombre" placeholder="Digite el nombre">
+        </div>
+        <div class="form-group col-md-6">
+          <label for="apellido">Apellido</label>
+          <input type="text" [(ngModel)]="modelEmpleado.apellido" class="form-control" name="apellido" placeholder="Digite el apellido">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="usuario">Usuario</label>
+          <input type="text" [(ngModel)]="modelEmpleado.usuario" class="form-control" name="usuario" placeholder="Digite el usuario">
+        </div>
+        <div class="form-group col-md-6">
+          <label for="correo">Correo</label>
+          <input type="text" [(ngModel)]="modelEmpleado.correo" class="form-control" name="correo" placeholder="Digite el correo">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="pais">Pais</label>
+          <input type="text" [(ngModel)]="modelEmpleado.pais" class="form-control" name="pais" placeholder="Digite el pais">
+        </div>
+
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" type="submit" (click)="addUser()">Guardar</button>
+
+    <button type="button" class="btn btn-outline-dark" (click)="cerrarModalGuardar()">Cerrar</button>
+  </div>
+</ng-template>
+
+<!-- Fin modal -->
+
+<!-- Modal para editar empleado existente -->
+<ng-template #editarEmpleado let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Editar Empleado</h4>
+    <button type="button" class="close" aria-label="Close" (click)="cerrarModalEditar()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="validationServer01">TIPO IDENTIFICACIÓN</label>
+          <select class="form-control" name="tipoIdentificacion" [(ngModel)]="modelEmpleado.tipoidentificacion"
+            placeholder="Elija un tipo de identificacion">
+            <option value="CC">Cédula de ciudadanía</option>
+            <option value="CE">Cédula de extranjería</option>
+            <option value="PE">Permiso especial</option>
+            <option value="PA">Pasaporte</option>
+          </select>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="numIdentifiacion"># Identificacion</label>
+          <input type="text" [(ngModel)]="modelEmpleado.numeroidentificacion" class="form-control" name="inputPassword4" placeholder="Digite el numero de identificación" readonly>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="nombre">Nombre</label>
+          <input type="text" [(ngModel)]="modelEmpleado.nombre" class="form-control" name="nombre" placeholder="Digite el nombre">
+        </div>
+        <div class="form-group col-md-6">
+          <label for="apellido">Apellido</label>
+          <input type="text" [(ngModel)]="modelEmpleado.apellido" class="form-control" name="apellido" placeholder="Digite el apellido">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="usuario">Usuario</label>
+          <input type="text" [(ngModel)]="modelEmpleado.usuario" class="form-control" name="usuario" placeholder="Digite el usuario">
+        </div>
+        <div class="form-group col-md-6">
+          <label for="correo">Correo</label>
+          <input type="text" [(ngModel)]="modelEmpleado.correo" class="form-control" name="correo" placeholder="Digite el correo">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="pais">Pais</label>
+          <input type="text" [(ngModel)]="modelEmpleado.pais" class="form-control" name="pais" placeholder="Digite el pais">
+        </div>
+
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" type="submit" (click)="updateUser()">Actualizar</button>
+
+    <button type="button" class="btn btn-outline-dark" (click)="cerrarModalEditar()">Cerrar</button>
+  </div>
+</ng-template>
+<!-- Fin modal -->
+
+<!-- <div class="container mt-5">
+    <div class="row">
+        <div class="col-4">
+            <form>
+                <div class="form-group">
+
+                    <input [(ngModel)]="username" name="username" placeholder="username" type="text" class="form-control"   aria-describedby="emailHelp">
+
+                </div>
+                <div class="form-group">
+                    <input  [(ngModel)]="firstname" name="firstname" placeholder="Firstname" type="text" class="form-control" >
+                </div>
+                <div class="form-group">
+                    <input [(ngModel)]="lastname" name="lastname"  placeholder="Lastname" type="text" class="form-control" >
+                </div>
+                <button (click)="addUser()" type="submit" class="btn btn-primary btn-block">Guardar Usuario</button>
+                <button (click)="updateUser()" type="submit" class="btn btn-warning btn-block">Guardar Cambios</button>
+                <button (click)="addUser()" type="submit" class="btn btn-success btn-block">Cargar CSV</button>
+
+            </form>
+        </div>
+
+        <div class="col-8">
+            <div class="row">
+
+                <div *ngFor="let usuario of Usuarios" class="col-4">
+                    <div class="card bg-light mb-3">
+                        <div class="card-header">{{usuario.username}}</div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{usuario.firstname}}</h5>
+                            <h5 class="card-title">{{usuario.lastname}}</h5>
+
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit"
+                               (click)="getDataUser(usuario.codu,usuario.username,usuario.firstname,usuario.lastname)"
+                                class="btn btn-warning btn-block">Edit User</button>
+                            <button (click)="deleteUser(usuario.codu)" type="submit"  class="btn btn-danger btn-block">Delete
+                                User</button>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+ -->
